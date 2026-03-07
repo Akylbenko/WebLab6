@@ -2,6 +2,7 @@ import { useState, useContext } from "react"
 import "./LoginSignup.css"
 import user_icon from "../assets/person.png"
 import password_icon from "../assets/password.png"
+import email_icon from "../assets/email.png"
 import api from "../../services/api"
 import { useNavigate } from "react-router-dom"
 import { AuthContext } from "../../context/AuthContext"
@@ -15,7 +16,6 @@ export default function LoginSignup() {
   const navigate = useNavigate()
   const { login } = useContext(AuthContext)
 
-  // login через JWT
   const handleLogin = async () => {
     try {
       const response = await api.post("/api/token/", {
@@ -32,7 +32,6 @@ export default function LoginSignup() {
     }
   }
 
-  // регистрация
   const handleRegister = async () => {
     try {
       await api.post("/api/register/", {
@@ -54,13 +53,11 @@ export default function LoginSignup() {
     }
   }
 
-  // кнопка действия
   const handleAuthClick = () => {
     if (action === "Вход") handleLogin()
     else handleRegister()
   }
 
-  // переключение режимов
   const handleModeClick = (mode) => {
     if (action === mode) handleAuthClick()
     else setAction(mode)
@@ -89,7 +86,7 @@ export default function LoginSignup() {
 
           {action === "Регистрация" && (
             <div className="input">
-              <img src={user_icon} alt="" />
+              <img src={email_icon} alt="" />
               <input
                 type="email"
                 placeholder="Почта"

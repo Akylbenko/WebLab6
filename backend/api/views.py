@@ -2,8 +2,11 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from django.contrib.auth.models import User
-from .models import Profile
-from .serializers import ProfileSerializer
+from .models import Profile, Article
+from .serializers import ProfileSerializer, ArticleSerializer
+from rest_framework import viewsets
+from rest_framework.permissions import IsAuthenticatedOrReadOnly
+from .permissions import IsAuthorOrAdminOrReadOnly
 
 @api_view(["POST"])
 def register_view(request):
@@ -39,3 +42,11 @@ def me_view(request):
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(serializer.data)
+
+class ArticleViewSet(viewsets.ModelViewSet):
+    queryset = Article.objects.all().order_by("-created_at")
+    serializer_class = ArticleSerializer
+    permission_classes = [IsAuthenticatedOrReadOnly, IsAuthorOrAdminOrReadOnly]
+
+    def perform_create(self, serializer):
+        serializer.save(author=self.request.user)
